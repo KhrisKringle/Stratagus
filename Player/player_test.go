@@ -10,8 +10,8 @@ func TestModifier(t *testing.T) {
 		Intelligence: 10,
 		Wisdom:       24,
 		Charisma:     8,
-		Inventory:    map[string]float32{
-			"sword": 15.2,
+		Inventory: map[string]float32{
+			"sword":  15.2,
 			"potion": 0.5,
 		},
 	}
@@ -31,8 +31,8 @@ func TestWeightChecker(t *testing.T) {
 		Intelligence: 10,
 		Wisdom:       24,
 		Charisma:     8,
-		Inventory:    map[string]float32{
-			"sword": 15.2,
+		Inventory: map[string]float32{
+			"sword":  15.2,
 			"potion": 0.5,
 		},
 	}

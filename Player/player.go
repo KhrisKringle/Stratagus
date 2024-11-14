@@ -1,18 +1,17 @@
 package Player
 
-
 type Player struct {
-	Strength int
-	Dexterity int
+	Strength     int
+	Dexterity    int
 	Constitution int
 	Intelligence int
-	Wisdom int
-	Charisma int
-	Inventory map[string]float32
+	Wisdom       int
+	Charisma     int
+	Inventory    map[string]float32
 }
 
 func (p Player) Modifier(attribute string) int {
-	switch attribute{
+	switch attribute {
 	case "Strength":
 		return (p.Strength - 10) / 2
 	case "Dexterity":
