@@ -8,6 +8,7 @@ type Player struct {
 	Wisdom       int
 	Charisma     int
 	Inventory    map[string]float32
+	Deck         map[string]int
 }
 
 func (p Player) Modifier(attribute string) int {
