@@ -78,7 +78,22 @@ func TestDeckSetter(t *testing.T) {
 	}
 }
 func TestPlayerPosition(t *testing.T) {
-	got := PlayerPositionChecker()
+	worldMap := [][]string{
+		{"water", "land", "land", "water", "water"},
+		{"land", "land", "land", "land", "water"},
+		{"water", "land", "water", "land", "land"},
+		{"water", "water", "land", "land", "land"},
+		{"water", "water", "water", "water", "water"},
+	}
+
+	player_postition := worldMap[2][1]
+
+	got := PlayerPositionChecker(player_postition)
+	want := true
+
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
 }
 
 // Need this function to compare the slices

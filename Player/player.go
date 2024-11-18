@@ -96,3 +96,11 @@ func (p *Player) DeckSetter(race string) []map[string]int {
 	}
 	return deck
 }
+
+//Checks the players position
+func PlayerPositionChecker(s string) bool {
+	if s != ("water") {
+		return true
+	}
+	return false
+}

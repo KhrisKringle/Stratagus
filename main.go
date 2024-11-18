@@ -3,21 +3,22 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math/rand"
 	"os"
-
+    "github.com/KhrisKringle/Stratagus/NPC/Nutrals"
 	"github.com/KhrisKringle/Stratagus/Player"
 )
 
 func main() {
 	worldMap := [][]string{
 		{"water", "land", "land", "water", "water"},
-		{"land", "land", "land", "land", "water"},
+		{"land", "water", "land", "land", "water"},
 		{"water", "land", "water", "land", "land"},
-		{"water", "water", "land", "land", "land"},
+		{"water", "land", "land", "village", "land"},
 		{"water", "water", "water", "water", "water"},
 	}
 
-	player_postition = worldMap[2][1]
+	player_postition := worldMap[2][1]
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
@@ -38,7 +39,34 @@ func main() {
 			"sword":  15.2,
 			"potion": 0.5,
 		},
+        Deck: nil,
 	}
+
+    type neutral struct {
+        Race         string
+        Resistances  []string
+        Strength     int
+        Dexterity    int
+        Constitution int
+        Intelligence int
+        Wisdom       int
+        Charisma     int
+        Inventory    map[string]float32
+    }
 	p.Deck = p.DeckSetter(p.Race)
+
+
+
+    for Player.PlayerPositionChecker(player_postition) {
+        landChance := rand.Intn(100)
+
+        switch landChance {
+
+        case landChance < 33:
+            neutral.RandomAttributeSetter()
+        }
+    }
+
+
 
 }
