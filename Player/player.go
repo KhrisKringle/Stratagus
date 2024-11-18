@@ -19,6 +19,7 @@ type Player struct {
 	Deck         []map[string]int
 	PlayerPos_Y int
 	PlayerPos_X int
+	PlayerMap [][]string
 }
 
 // Allways got the modifier on deck.
@@ -101,7 +102,7 @@ func (p *Player) DeckSetter(race string) []map[string]int {
 }
 
 //Moves the player
-func (p *Player) PlayerMove(s string) {
+func (p *Player) PlayerMove() {
 	reader := bufio.NewReader(os.Stdin)
 
         fmt.Print("Enter a direction (north, south, east, west): ")
@@ -124,6 +125,7 @@ func (p *Player) PlayerMove(s string) {
                 p.PlayerPos_X = p.PlayerPos_X - 1
         default:
                 fmt.Println("Invalid direction")
+				p.PlayerMove()
         }
 }
 

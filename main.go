@@ -19,8 +19,6 @@ func main() {
 		{"water", "water", "water", "water", "water"},
 	}
 
-	//player_postition := worldMap[2][1]
-
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
 
@@ -31,7 +29,7 @@ func main() {
 
 	p := Player.Player{
 		Race:         race,
-		Resistances:  make([]string, 5),
+		Resistances:  make([]string, 0, 5),
 		Journal:      make([]string, 0),
 		Strength:     20,
 		Dexterity:    18,
@@ -48,7 +46,7 @@ func main() {
 
     n := Nutrals.Neutral {
         Race:         race_list[randRace],
-        Resistances:  make([]string, 0),
+        Resistances:  make([]string, 0, 5),
         Strength:     0,
         Dexterity:    0,
         Constitution: 0,
@@ -58,7 +56,7 @@ func main() {
     
     e := Enemies.Enemy {
         Race: race_list[randRace],
-        Resistances: make([]string, 0),
+        Resistances: make([]string, 0, 5),
         Strength: 0,
         Dexterity: 0,
         Constitution: 0,
