@@ -4,19 +4,19 @@ import (
 	"testing"
 )
 
+var worldMap = [][]string{
+	{"water", "land", "land", "water", "water"},
+	{"land", "land", "land", "land", "water"},
+	{"water", "land", "water", "land", "land"},
+	{"water", "water", "land", "land", "land"},
+	{"water", "water", "water", "water", "water"},
+}
+
 func TestModifier(t *testing.T) {
 	p := Player{
 		Strength:     20,
-		Dexterity:    18,
-		Constitution: 14,
-		Intelligence: 10,
-		Wisdom:       24,
-		Charisma:     8,
-		Inventory: map[string]float32{
-			"sword":  15.2,
-			"potion": 0.5,
-		},
 	}
+
 	got := p.Modifier("Strength")
 	var want int = 5
 
@@ -26,18 +26,14 @@ func TestModifier(t *testing.T) {
 }
 
 func TestWeightChecker(t *testing.T) {
+
 	p := Player{
-		Strength:     20,
-		Dexterity:    18,
-		Constitution: 14,
-		Intelligence: 10,
-		Wisdom:       24,
-		Charisma:     8,
 		Inventory: map[string]float32{
 			"sword":  15.2,
 			"potion": 0.5,
 		},
 	}
+
 	got := p.WeightChecker(p.Inventory)
 	want := true
 
@@ -47,24 +43,13 @@ func TestWeightChecker(t *testing.T) {
 }
 
 func TestDeckSetter(t *testing.T) {
-	p := Player{
-		Race:         "Human",
-		Resistances:  make([]string, 5),
-		Journal:      make([]string, 0),
-		Strength:     20,
-		Dexterity:    18,
-		Constitution: 14,
-		Intelligence: 10,
-		Wisdom:       24,
-		Charisma:     8,
-		Inventory: map[string]float32{
-			"sword":  15.2,
-			"potion": 0.5,
-		},
-		Deck: nil,
-	}
 
-	got := p.DeckSetter("Human")
+	p := Player {
+		Race: "Human",
+	}
+	
+	
+	got := p.DeckSetter(p.Race)
 	want := []map[string]int{
 		{"Holy": 3},
 		{"Holy": 4},
@@ -78,23 +63,34 @@ func TestDeckSetter(t *testing.T) {
 	}
 }
 func TestPlayerPosition(t *testing.T) {
-	worldMap := [][]string{
-		{"water", "land", "land", "water", "water"},
-		{"land", "land", "land", "land", "water"},
-		{"water", "land", "water", "land", "land"},
-		{"water", "water", "land", "land", "land"},
-		{"water", "water", "water", "water", "water"},
+
+	p := Player{
+        PlayerPos_Y: 1,
+        PlayerPos_X: 0,
 	}
 
-	player_postition := worldMap[2][1]
-
-	got := PlayerPositionChecker(player_postition)
+	got := PlayerPositionChecker(worldMap[p.PlayerPos_Y][p.PlayerPos_X])
 	want := true
 
 	if got != want {
 		t.Errorf("got %v want %v", got, want)
 	}
 }
+
+/*func TestPlayerMove(t testing.T) {
+
+	p := Player{
+        PlayerPos_Y: 2,
+        PlayerPos_X: 1,
+	}
+
+	got := PlayerMove("e")
+	want := "land"
+
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
+}*/
 
 // Need this function to compare the slices
 func compareSlices(slice1, slice2 []map[string]int) bool {

@@ -1,5 +1,12 @@
 package Player
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
 type Player struct {
 	Race         string
 	Resistances  []string
@@ -7,11 +14,11 @@ type Player struct {
 	Strength     int
 	Dexterity    int
 	Constitution int
-	Intelligence int
-	Wisdom       int
 	Charisma     int
 	Inventory    map[string]float32
 	Deck         []map[string]int
+	PlayerPos_Y int
+	PlayerPos_X int
 }
 
 // Allways got the modifier on deck.
@@ -23,10 +30,6 @@ func (p Player) Modifier(attribute string) int {
 		return (p.Dexterity - 10) / 2
 	case "Constitution":
 		return (p.Constitution - 10) / 2
-	case "Intelligence":
-		return (p.Intelligence - 10) / 2
-	case "Wisdom":
-		return (p.Wisdom - 10) / 2
 	case "Charisma":
 		return (p.Charisma - 10) / 2
 	default:
@@ -97,6 +100,34 @@ func (p *Player) DeckSetter(race string) []map[string]int {
 	return deck
 }
 
+//Moves the player
+func (p *Player) PlayerMove(s string) {
+	reader := bufio.NewReader(os.Stdin)
+
+        fmt.Print("Enter a direction (north, south, east, west): ")
+
+        // Read the user's input
+        input, _ := reader.ReadString('\n')
+
+        // Remove the newline character
+        input = strings.TrimSpace(input)
+
+        // Check the input and take appropriate action
+        switch input {
+        case "north", "n", "North", "N":
+                p.PlayerPos_Y = p.PlayerPos_Y -1
+        case "south", "s", "South", "S":
+                p.PlayerPos_Y = p.PlayerPos_Y +1
+        case "east", "e", "East", "E":
+                p.PlayerPos_X = p.PlayerPos_X + 1
+        case "west", "w", "West", "W":
+                p.PlayerPos_X = p.PlayerPos_X - 1
+        default:
+                fmt.Println("Invalid direction")
+        }
+}
+
+
 //Checks the players position
 func PlayerPositionChecker(s string) bool {
 	if s != ("water") {
@@ -104,3 +135,4 @@ func PlayerPositionChecker(s string) bool {
 	}
 	return false
 }
+
