@@ -9,6 +9,16 @@ import (
 )
 
 func main() {
+	worldMap := [][]string{
+		{"water", "land", "land", "water", "water"},
+		{"land", "land", "land", "land", "water"},
+		{"water", "land", "water", "land", "land"},
+		{"water", "water", "land", "land", "land"},
+		{"water", "water", "water", "water", "water"},
+	}
+
+	player_postition = worldMap[2][1]
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
 

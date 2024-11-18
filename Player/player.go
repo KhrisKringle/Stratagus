@@ -48,7 +48,7 @@ func (p Player) WeightChecker(inv map[string]float32) bool {
 }
 
 func (p *Player) DeckSetter(race string) []map[string]int {
-	deck := make([]map[string]int, 20)
+	deck := make([]map[string]int, 0, 20)
 	switch race {
 	case "Human":
 		deck = append(deck,

@@ -61,6 +61,7 @@ func TestDeckSetter(t *testing.T) {
 			"sword":  15.2,
 			"potion": 0.5,
 		},
+		Deck: nil,
 	}
 
 	got := p.DeckSetter("Human")
@@ -75,6 +76,9 @@ func TestDeckSetter(t *testing.T) {
 	if !compareSlices(got, want) {
 		t.Errorf("got %v want %v", got, want)
 	}
+}
+func TestPlayerPosition(t *testing.T) {
+	got := PlayerPositionChecker()
 }
 
 // Need this function to compare the slices
