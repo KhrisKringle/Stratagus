@@ -1,4 +1,4 @@
-package Player
+package player
 
 import (
 	"bufio"
@@ -15,14 +15,25 @@ type Player struct {
 	Dexterity    int
 	Constitution int
 	Charisma     int
+	Health       int
+	Alive        bool
 	Inventory    map[string]float32
 	Deck         []map[string]int
-	PlayerPos_Y int
-	PlayerPos_X int
-	PlayerMap [][]string
+	PlayerPos_Y  int
+	PlayerPos_X  int
+	PlayerMap    [][]string
 }
 
-// Allways got the modifier on deck.
+// 2D matrix of the world map
+var WorldMap = [][]string{
+	{"water", "land", "land", "land", "water"},
+	{"land", "land", "land", "land", "water"},
+	{"water", "land", "water", "land", "land"},
+	{"water", "land", "land", "village", "land"},
+	{"water", "water", "water", "water", "water"},
+}
+
+// Allways got the modifier on deck
 func (p Player) Modifier(attribute string) int {
 	switch attribute {
 	case "Strength":
@@ -101,40 +112,67 @@ func (p *Player) DeckSetter(race string) []map[string]int {
 	return deck
 }
 
-//Moves the player
+// Moves the player
 func (p *Player) PlayerMove() {
 	reader := bufio.NewReader(os.Stdin)
 
-        fmt.Print("Enter a direction (north, south, east, west): ")
+	fmt.Print("Enter a direction (north, south, east, west): ")
 
-        // Read the user's input
-        input, _ := reader.ReadString('\n')
+	// Read the user's input
+	input, _ := reader.ReadString('\n')
 
-        // Remove the newline character
-        input = strings.TrimSpace(input)
+	// Remove the newline character
+	input = strings.TrimSpace(input)
 
-        // Check the input and take appropriate action
-        switch input {
-        case "north", "n", "North", "N":
-                p.PlayerPos_Y = p.PlayerPos_Y -1
-        case "south", "s", "South", "S":
-                p.PlayerPos_Y = p.PlayerPos_Y +1
-        case "east", "e", "East", "E":
-                p.PlayerPos_X = p.PlayerPos_X + 1
-        case "west", "w", "West", "W":
-                p.PlayerPos_X = p.PlayerPos_X - 1
-        default:
-                fmt.Println("Invalid direction")
-				p.PlayerMove()
-        }
+	// Check the input and take appropriate action
+	switch input {
+	case "north", "n", "North", "N":
+		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y-1][p.PlayerPos_X]) {
+			fmt.Println("Thats water you cant swim.")
+			p.PlayerMove()
+		} else {
+			p.PlayerPos_Y = p.PlayerPos_Y - 1
+		}
+	case "south", "s", "South", "S":
+		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y+1][p.PlayerPos_X]) {
+			fmt.Println("Thats water you cant swim.")
+			p.PlayerMove()
+		} else {
+			p.PlayerPos_Y = p.PlayerPos_Y + 1
+		}
+	case "east", "e", "East", "E":
+		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X+1]) {
+			fmt.Println("Thats water you cant swim.")
+			p.PlayerMove()
+		} else {
+			p.PlayerPos_X = p.PlayerPos_X + 1
+		}
+	case "west", "w", "West", "W":
+		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X-1]) {
+			fmt.Println("Thats water you cant swim.")
+			p.PlayerMove()
+		} else {
+			p.PlayerPos_X = p.PlayerPos_X - 1
+		}
+	default:
+		fmt.Println("Invalid direction")
+		p.PlayerMove()
+	}
 }
 
-
-//Checks the players position
+// Checks the players position
 func PlayerPositionChecker(s string) bool {
 	if s != ("water") {
 		return true
+	} else {
+		return false
 	}
-	return false
 }
 
+func (p *Player) TakeDamage(dmg int) {
+	if p.Health != 0 {
+		p.Health -= dmg
+	} else {
+		p.Alive = false
+	}
+}

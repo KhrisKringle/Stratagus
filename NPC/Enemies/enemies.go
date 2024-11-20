@@ -10,6 +10,8 @@ type Enemy struct {
 	Strength     int
 	Dexterity    int
 	Constitution int
+	Health       int
+	Alive        bool
 	Inventory    map[string]float32
 }
 

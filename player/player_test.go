@@ -1,16 +1,8 @@
-package Player
+package player
 
 import (
 	"testing"
 )
-
-var worldMap = [][]string{
-	{"water", "land", "land", "water", "water"},
-	{"land", "land", "land", "land", "water"},
-	{"water", "land", "water", "land", "land"},
-	{"water", "water", "land", "land", "land"},
-	{"water", "water", "water", "water", "water"},
-}
 
 func TestModifier(t *testing.T) {
 	p := Player{
@@ -69,7 +61,7 @@ func TestPlayerPosition(t *testing.T) {
         PlayerPos_X: 0,
 	}
 
-	got := PlayerPositionChecker(worldMap[p.PlayerPos_Y][p.PlayerPos_X])
+	got := PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
 	want := true
 
 	if got != want {
