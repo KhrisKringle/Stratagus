@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 )
-
+// defines the players stats and such
 type Player struct {
 	Race         string
 	Resistances  []string

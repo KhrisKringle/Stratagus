@@ -2,11 +2,13 @@ package player
 
 import (
 	"testing"
+
+	"github.com/KhrisKringle/Stratagus/player"
 )
 
 func TestModifier(t *testing.T) {
 	p := Player{
-		Strength:     20,
+		Strength: 20,
 	}
 
 	got := p.Modifier("Strength")
@@ -36,11 +38,10 @@ func TestWeightChecker(t *testing.T) {
 
 func TestDeckSetter(t *testing.T) {
 
-	p := Player {
+	p := Player{
 		Race: "Human",
 	}
-	
-	
+
 	got := p.DeckSetter(p.Race)
 	want := []map[string]int{
 		{"Holy": 3},
@@ -57,8 +58,8 @@ func TestDeckSetter(t *testing.T) {
 func TestPlayerPosition(t *testing.T) {
 
 	p := Player{
-        PlayerPos_Y: 1,
-        PlayerPos_X: 0,
+		PlayerPos_Y: 1,
+		PlayerPos_X: 0,
 	}
 
 	got := PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
@@ -69,20 +70,20 @@ func TestPlayerPosition(t *testing.T) {
 	}
 }
 
-/*func TestPlayerMove(t testing.T) {
+func TestPlayerMove(t testing.T) {
 
 	p := Player{
-        PlayerPos_Y: 2,
-        PlayerPos_X: 1,
+		PlayerPos_Y: 2,
+		PlayerPos_X: 1,
 	}
 
-	got := PlayerMove("e")
+	got := player.PlayerMove()
 	want := "land"
 
 	if got != want {
 		t.Errorf("got %v want %v", got, want)
 	}
-}*/
+}
 
 // Need this function to compare the slices
 func compareSlices(slice1, slice2 []map[string]int) bool {
