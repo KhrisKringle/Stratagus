@@ -1,3 +1,8 @@
+/*This is what is unique to the player
+Like move and weight check
+If you want Attack etc. go to entity.go
+*/
+
 package player
 
 import (
@@ -128,28 +133,28 @@ func (p *Player) PlayerMove() {
 	switch input {
 	case "north", "n", "North", "N":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y-1][p.PlayerPos_X]) {
-			fmt.Println("Thats water you cant swim.")
+			fmt.Println("Thats water, you cant swim.")
 			p.PlayerMove()
 		} else {
 			p.PlayerPos_Y = p.PlayerPos_Y - 1
 		}
 	case "south", "s", "South", "S":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y+1][p.PlayerPos_X]) {
-			fmt.Println("Thats water you cant swim.")
+			fmt.Println("Thats water, you cant swim.")
 			p.PlayerMove()
 		} else {
 			p.PlayerPos_Y = p.PlayerPos_Y + 1
 		}
 	case "east", "e", "East", "E":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X+1]) {
-			fmt.Println("Thats water you cant swim.")
+			fmt.Println("Thats water, you cant swim.")
 			p.PlayerMove()
 		} else {
 			p.PlayerPos_X = p.PlayerPos_X + 1
 		}
 	case "west", "w", "West", "W":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X-1]) {
-			fmt.Println("Thats water you cant swim.")
+			fmt.Println("Thats water, you cant swim.")
 			p.PlayerMove()
 		} else {
 			p.PlayerPos_X = p.PlayerPos_X - 1

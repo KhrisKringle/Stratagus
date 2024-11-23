@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strings"
 
 	"github.com/KhrisKringle/Stratagus/NPC/Enemies"
 	"github.com/KhrisKringle/Stratagus/NPC/Nutrals"
@@ -17,9 +18,13 @@ func main() {
 	fmt.Println("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
 
 	var race_list = []string{"Elf", "Human", "Orc", "Gnome", "Trent", "Dragonkin"}
+
 	randRace := rand.Intn(5)
 
 	race, _ := reader.ReadString('\n')
+
+	// Remove the newline character
+	race = strings.TrimSpace(race)
 
 	p := player.Player{
 		Race:         race,
@@ -29,7 +34,7 @@ func main() {
 		Dexterity:    18,
 		Constitution: 14,
 		Charisma:     8,
-        Health: 20,
+		Health:       20,
 		Inventory: map[string]float32{
 			"sword":  15.2,
 			"potion": 0.5,
@@ -59,34 +64,45 @@ func main() {
 
 	p.Deck = p.DeckSetter(p.Race)
 
+
+    playerTurn := false
+    enemyTurn := false
+
+    outerLoop:
 	for player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
-		landChance := rand.Intn(100)
+		for  p.Health > 0 {
+			landChance := rand.Intn(100)
 
-        p.PlayerMove()
+			if landChance <= 33 {
+                
+				e.RandomAttributeSetter()
 
-		if landChance <= 33 {
+				if p.Dexterity > e.Dexterity {
+					playerTurn = true
 
-            //playerTurn := false
-            //enemyTurn := false
+				} else { 
+                    enemyTurn = true
+                }
+                for p.Health > 0 || e.Health > 0{
+				    
+                }
+			}
 
-			e.RandomAttributeSetter()
+			if landChance >= 33 || landChance <= 66 {
+				continue
+			}
 
-            if p.Dexterity > e.Dexterity {
-                //playerTurn = true
-
-            }
+			if landChance >= 66 {
+				n.RandomAttributeSetter()
+			}
+			p.PlayerMove()
+            
 		}
+        if player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
+            fmt.Println("Congrats you reached the village!!!")
+            break outerLoop
+        }
+    }
 
-		if landChance >= 33 || landChance <= 66 {
-			continue
-		}
-
-		if landChance >= 66 {
-			n.RandomAttributeSetter()
-		}
-	}
-
-
-
-    fmt.Println("Thanks for playing come again!!!")
+	fmt.Println("Thanks for playing come again!!!")
 }

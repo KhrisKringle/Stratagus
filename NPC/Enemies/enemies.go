@@ -21,7 +21,7 @@ func (e *Enemy) RandomAttributeSetter() {
 
 	for i := 0; i <= 2; i++ {
 		attributeRandomNumber := rand.Intn(19)
-		attributeNumber := attributeRandomNumber + 1
+		attributeNumber := attributeRandomNumber + 1 // Have to add one because it starts at 0
 		attributeHolder = append(attributeHolder, attributeNumber)
 	}
 	e.Strength = attributeHolder[0]
