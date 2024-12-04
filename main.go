@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/KhrisKringle/Stratagus/NPC/Enemies"
@@ -63,7 +64,7 @@ func main() {
 		Constitution: 0,
 	}
 
-	p.Deck = p.DeckSetter(p.Race)
+	p.DeckSetter(p.Race)
 
 outerLoop:
 	for player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
@@ -73,7 +74,7 @@ outerLoop:
 			landChance := rand.Intn(100)
 
 			if landChance <= 33 {
-
+				fmt.Println(landChance)
 				e.RandomAttributeSetter()
 
 				if p.Dexterity > e.Dexterity {
@@ -82,38 +83,53 @@ outerLoop:
 				} else {
 					e.ChangeTurnState(e.AttackTurnState)
 				}
+				fmt.Println("You Have entered combat!!!")
 				for p.Health > 0 || e.Health > 0 {
 					reader := bufio.NewReader(os.Stdin)
 
-					fmt.Println("You Have entered combat!!!")
+					fmt.Println("Your Hand:")
+					available_input := make([]player.Spell, 0)
+					for _, spell := range p.Deck {
+						available_input = append(available_input, spell)
+						fmt.Printf("+----------+\n")
+						fmt.Printf("| [%s] %d  |\n", spell.DamageType, spell.Damage)
+						fmt.Printf("+----------+\n")
+					}
 
 					input, _ := reader.ReadString('\n')
 
-					input = strings.TrimSpace(input)
+					inputv2 := strings.TrimSpace(input)
 
-					//available_input := make([]string, 0)
+					parts := strings.Split(inputv2, " ")
+					damageType := player.DamageType(parts[0])
+					damage, _ := strconv.Atoi(parts[1])
 
-					/*for k, v := range p.Deck {
-						fmt.Println(k, ":", v)
+					spell := player.Spell{
+						DamageType: damageType,
+						Damage:     damage,
+					}
 
-						if !strings.Contains(available_input[k]) {
-							available_input = append(available_input, k)
+					for _, x := range available_input {
+						if spell != x {
+							fmt.Printf("You do not have the spell type %s\n", inputv2)
+							break
 						}
 					}
 
-					/*switch input{
-						case
-					}*/
 				}
 			}
 
 			if landChance >= 33 || landChance <= 66 {
+				fmt.Println(landChance)
 				fmt.Println("There is nothing here but trees...")
 				continue
 			}
 
 			if landChance >= 66 {
+				fmt.Println(landChance)
 				n.RandomAttributeSetter()
+				continue
+
 			}
 			p.PlayerMove()
 

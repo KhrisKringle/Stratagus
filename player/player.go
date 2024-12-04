@@ -7,6 +7,22 @@ import (
 	"strings"
 )
 
+type DamageType string
+
+const (
+	ForceDamage  DamageType = "Force"
+	HolyDamage   DamageType = "Holy"
+	NatureDamage DamageType = "Nature"
+	PoisonDamage DamageType = "Poison"
+	FireDamage   DamageType = "Fire"
+	ArcaneDamage DamageType = "Arcane"
+)
+
+type Spell struct {
+	DamageType DamageType
+	Damage     int
+}
+
 // defines the players stats and such
 type Player struct {
 	Race            string
@@ -19,7 +35,7 @@ type Player struct {
 	Health          int
 	Alive           bool
 	Inventory       map[string]float32
-	Deck            []map[string]int
+	Deck            []Spell
 	PlayerPos_Y     int
 	PlayerPos_X     int
 	PlayerMap       [][]string
@@ -69,54 +85,56 @@ func (p Player) WeightChecker(inv map[string]float32) bool {
 	}
 }
 
-func (p *Player) DeckSetter(race string) []map[string]int {
-	deck := make([]map[string]int, 0, 20)
+func (p *Player) DeckSetter(race string) {
 	switch race {
 	case "Human":
-		deck = append(deck,
-			map[string]int{"Holy": 3},
-			map[string]int{"Holy": 4},
-			map[string]int{"Force": 8},
-			map[string]int{"Force": 7},
-			map[string]int{"Force": 9})
+
+		//p.Deck = append(p.Deck, Spell{HolyDamage, 3})
+
+		p.Deck = append(p.Deck,
+			Spell{HolyDamage, 3},
+			Spell{HolyDamage, 4},
+			Spell{ForceDamage, 8},
+			Spell{ForceDamage, 7},
+			Spell{ForceDamage, 9})
 	case "Elf":
-		deck = append(deck,
-			map[string]int{"Nature": 5},
-			map[string]int{"Nature": 7},
-			map[string]int{"Nature": 8},
-			map[string]int{"Poison": 4},
-			map[string]int{"Poison": 3})
+		p.Deck = append(p.Deck,
+			Spell{NatureDamage, 5},
+			Spell{NatureDamage, 7},
+			Spell{NatureDamage, 8},
+			Spell{PoisonDamage, 4},
+			Spell{PoisonDamage, 3})
 	case "Orc":
-		deck = append(deck,
-			map[string]int{"Force": 8},
-			map[string]int{"Force": 6},
-			map[string]int{"Force": 10},
-			map[string]int{"Force": 9})
+		p.Deck = append(p.Deck,
+			Spell{ForceDamage, 8},
+			Spell{ForceDamage, 6},
+			Spell{ForceDamage, 10},
+			Spell{ForceDamage, 9})
 	case "Gnome":
-		deck = append(deck,
-			map[string]int{"Arcane": 8},
-			map[string]int{"Arcane": 9},
-			map[string]int{"Arcane": 10},
-			map[string]int{"Nature": 7},
-			map[string]int{"Poison": 3})
+		p.Deck = append(p.Deck,
+			Spell{ArcaneDamage, 8},
+			Spell{ArcaneDamage, 9},
+			Spell{ArcaneDamage, 10},
+			Spell{NatureDamage, 7},
+			Spell{PoisonDamage, 3})
 	case "Trent":
-		deck = append(deck,
-			map[string]int{"Nature": 5},
-			map[string]int{"Nature": 7},
-			map[string]int{"Nature": 8},
-			map[string]int{"Nature": 5},
-			map[string]int{"Nature": 7},
-			map[string]int{"Nature": 8})
+		p.Deck = append(p.Deck,
+			Spell{NatureDamage, 5},
+			Spell{NatureDamage, 7},
+			Spell{NatureDamage, 8},
+			Spell{NatureDamage, 5},
+			Spell{NatureDamage, 7},
+			Spell{NatureDamage, 8})
 	case "Dragonkin":
-		deck = append(deck,
-			map[string]int{"Fire": 5},
-			map[string]int{"Fire": 7},
-			map[string]int{"Fire": 8},
-			map[string]int{"Fire": 5},
-			map[string]int{"Fire": 7},
-			map[string]int{"Fire": 8})
+		p.Deck = append(p.Deck,
+			Spell{FireDamage, 5},
+			Spell{FireDamage, 7},
+			Spell{FireDamage, 8},
+			Spell{FireDamage, 5},
+			Spell{FireDamage, 7},
+			Spell{FireDamage, 8})
 	}
-	return deck
+
 }
 
 // Moves the player

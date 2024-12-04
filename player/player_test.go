@@ -40,16 +40,17 @@ func TestDeckSetter(t *testing.T) {
 
 	p := player.Player{
 		Race: "Human",
+		Deck: make([]player.Spell, 0),
 	}
 
-	got := p.DeckSetter(p.Race)
-	want := []map[string]int{
-		{"Holy": 3},
-		{"Holy": 4},
-		{"Force": 8},
-		{"Force": 7},
-		{"Force": 9},
-	}
+	p.DeckSetter(p.Race)
+	got := p.Deck
+	want := []player.Spell{
+		{player.HolyDamage, 3},
+		{player.HolyDamage, 4},
+		{player.ForceDamage, 8},
+		{player.ForceDamage, 7},
+		{player.ForceDamage, 9}}
 
 	if !compareSlices(got, want) {
 		t.Errorf("got %v want %v", got, want)
@@ -86,36 +87,31 @@ func TestPlayerMove(t *testing.T) {
 	}
 }
 
-/*func TestChangeTurnState(t *testing.T) {
+func TestChangeTurnState(t *testing.T) {
 
 	p := player.Player{
 		AttackTurnState: false,
 	}
-	got := player.ChangeTurnState(p.AttackTurnState)
+	p.ChangeTurnState(p.AttackTurnState)
+	got := p.AttackTurnState
 	want := true
 
 	if got != want {
-		t.Errorf("got %b want %b", got, want)
+		t.Errorf("got %v want %v", got, want)
 	}
-}*/
+}
 
 // Need this function to compare the slices
-func compareSlices(slice1, slice2 []map[string]int) bool {
+func compareSlices(slice1, slice2 []player.Spell) bool {
 	if len(slice1) != len(slice2) {
 		return false
 	}
 
 	for i := range slice1 {
-		if len(slice1[i]) != len(slice2[i]) {
+		if slice1[i] != slice2[i] {
 			return false
 		}
 
-		for key, value1 := range slice1[i] {
-			value2, ok := slice2[i][key]
-			if !ok || value1 != value2 {
-				return false
-			}
-		}
 	}
 
 	return true
