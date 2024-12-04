@@ -1,8 +1,3 @@
-/*This is what is unique to the player
-Like move and weight check
-If you want Attack etc. go to entity.go
-*/
-
 package player
 
 import (
@@ -11,23 +6,30 @@ import (
 	"os"
 	"strings"
 )
+
 // defines the players stats and such
 type Player struct {
-	Race         string
-	Resistances  []string
-	Journal      []string
-	Strength     int
-	Dexterity    int
-	Constitution int
-	Charisma     int
-	Health       int
-	Alive        bool
-	Inventory    map[string]float32
-	Deck         []map[string]int
-	PlayerPos_Y  int
-	PlayerPos_X  int
-	PlayerMap    [][]string
+	Race            string
+	Resistances     []string
+	Journal         []string
+	Strength        int
+	Dexterity       int
+	Constitution    int
+	Charisma        int
+	Health          int
+	Alive           bool
+	Inventory       map[string]float32
+	Deck            []map[string]int
+	PlayerPos_Y     int
+	PlayerPos_X     int
+	PlayerMap       [][]string
+	AttackTurnState bool
 }
+
+/*This is what is unique to the player
+Like move and weight check
+If you want Attack etc. go to entity.go
+*/
 
 // 2D matrix of the world map
 var WorldMap = [][]string{
@@ -134,34 +136,34 @@ func (p *Player) PlayerMove() {
 	case "north", "n", "North", "N":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y-1][p.PlayerPos_X]) {
 			fmt.Println("Thats water, you cant swim.")
-			p.PlayerMove()
+			//p.PlayerMove()
 		} else {
 			p.PlayerPos_Y = p.PlayerPos_Y - 1
 		}
 	case "south", "s", "South", "S":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y+1][p.PlayerPos_X]) {
 			fmt.Println("Thats water, you cant swim.")
-			p.PlayerMove()
+			//p.PlayerMove()
 		} else {
 			p.PlayerPos_Y = p.PlayerPos_Y + 1
 		}
 	case "east", "e", "East", "E":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X+1]) {
 			fmt.Println("Thats water, you cant swim.")
-			p.PlayerMove()
+			//p.PlayerMove()
 		} else {
 			p.PlayerPos_X = p.PlayerPos_X + 1
 		}
 	case "west", "w", "West", "W":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X-1]) {
 			fmt.Println("Thats water, you cant swim.")
-			p.PlayerMove()
+			//p.PlayerMove()
 		} else {
 			p.PlayerPos_X = p.PlayerPos_X - 1
 		}
 	default:
 		fmt.Println("Invalid direction")
-		p.PlayerMove()
+		//p.PlayerMove()
 	}
 }
 
@@ -179,5 +181,14 @@ func (p *Player) TakeDamage(dmg int) {
 		p.Health -= dmg
 	} else {
 		p.Alive = false
+	}
+}
+
+func (p *Player) ChangeTurnState(pt bool) {
+
+	if pt == true {
+		p.AttackTurnState = false
+	} else {
+		p.AttackTurnState = true
 	}
 }

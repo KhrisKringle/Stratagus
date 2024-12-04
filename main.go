@@ -39,9 +39,10 @@ func main() {
 			"sword":  15.2,
 			"potion": 0.5,
 		},
-		Deck:        nil,
-		PlayerPos_Y: 1,
-		PlayerPos_X: 0,
+		Deck:            nil,
+		PlayerPos_Y:     1,
+		PlayerPos_X:     0,
+		AttackTurnState: false,
 	}
 
 	n := Nutrals.Neutral{
@@ -64,31 +65,50 @@ func main() {
 
 	p.Deck = p.DeckSetter(p.Race)
 
-
-    playerTurn := false
-    enemyTurn := false
-
-    outerLoop:
+outerLoop:
 	for player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
-		for  p.Health > 0 {
+		for p.Health > 0 {
+
+			// Decides if they meet an enemy or a neutral or an empty spot
 			landChance := rand.Intn(100)
 
 			if landChance <= 33 {
-                
+
 				e.RandomAttributeSetter()
 
 				if p.Dexterity > e.Dexterity {
-					playerTurn = true
+					p.ChangeTurnState(p.AttackTurnState)
 
-				} else { 
-                    enemyTurn = true
-                }
-                for p.Health > 0 || e.Health > 0{
-				    
-                }
+				} else {
+					e.ChangeTurnState(e.AttackTurnState)
+				}
+				for p.Health > 0 || e.Health > 0 {
+					reader := bufio.NewReader(os.Stdin)
+
+					fmt.Println("You Have entered combat!!!")
+
+					input, _ := reader.ReadString('\n')
+
+					input = strings.TrimSpace(input)
+
+					//available_input := make([]string, 0)
+
+					/*for k, v := range p.Deck {
+						fmt.Println(k, ":", v)
+
+						if !strings.Contains(available_input[k]) {
+							available_input = append(available_input, k)
+						}
+					}
+
+					/*switch input{
+						case
+					}*/
+				}
 			}
 
 			if landChance >= 33 || landChance <= 66 {
+				fmt.Println("There is nothing here but trees...")
 				continue
 			}
 
@@ -96,13 +116,13 @@ func main() {
 				n.RandomAttributeSetter()
 			}
 			p.PlayerMove()
-            
+
 		}
-        if player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
-            fmt.Println("Congrats you reached the village!!!")
-            break outerLoop
-        }
-    }
+		if player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
+			fmt.Println("Congrats you reached the village!!!")
+			break outerLoop
+		}
+	}
 
 	fmt.Println("Thanks for playing come again!!!")
 }

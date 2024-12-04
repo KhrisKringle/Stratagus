@@ -1,4 +1,4 @@
-package Enemies
+package Enemies_test
 
 import (
 	"testing"
@@ -17,5 +17,17 @@ func TestRandomAttributeSetter(t *testing.T) {
 		Inventory    map[string]float32
 	}
 
+}
 
+func TestChangeTurnState(t *testing.T) {
+
+	p := Enemy.enemy{
+		AttackTurnState: false,
+	}
+	got := Enemy.ChangeTurnState(p.AttackTurnState)
+	want := true
+
+	if got != want {
+		t.Errorf("got %b want %b", got, want)
+	}
 }

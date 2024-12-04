@@ -1,4 +1,4 @@
-package player
+package player_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 )
 
 func TestModifier(t *testing.T) {
-	p := Player{
+	p := player.Player{
 		Strength: 20,
 	}
 
@@ -21,7 +21,7 @@ func TestModifier(t *testing.T) {
 
 func TestWeightChecker(t *testing.T) {
 
-	p := Player{
+	p := player.Player{
 		Inventory: map[string]float32{
 			"sword":  15.2,
 			"potion": 0.5,
@@ -38,7 +38,7 @@ func TestWeightChecker(t *testing.T) {
 
 func TestDeckSetter(t *testing.T) {
 
-	p := Player{
+	p := player.Player{
 		Race: "Human",
 	}
 
@@ -57,12 +57,12 @@ func TestDeckSetter(t *testing.T) {
 }
 func TestPlayerPosition(t *testing.T) {
 
-	p := Player{
+	p := player.Player{
 		PlayerPos_Y: 1,
 		PlayerPos_X: 0,
 	}
 
-	got := PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
+	got := player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
 	want := true
 
 	if got != want {
@@ -70,20 +70,34 @@ func TestPlayerPosition(t *testing.T) {
 	}
 }
 
-func TestPlayerMove(t testing.T) {
+func TestPlayerMove(t *testing.T) {
 
-	p := Player{
+	p := player.Player{
 		PlayerPos_Y: 2,
 		PlayerPos_X: 1,
 	}
 
-	got := player.PlayerMove()
-	want := "land"
+	p.PlayerMove()
+	got := player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
+	want := true
 
 	if got != want {
 		t.Errorf("got %v want %v", got, want)
 	}
 }
+
+/*func TestChangeTurnState(t *testing.T) {
+
+	p := player.Player{
+		AttackTurnState: false,
+	}
+	got := player.ChangeTurnState(p.AttackTurnState)
+	want := true
+
+	if got != want {
+		t.Errorf("got %b want %b", got, want)
+	}
+}*/
 
 // Need this function to compare the slices
 func compareSlices(slice1, slice2 []map[string]int) bool {

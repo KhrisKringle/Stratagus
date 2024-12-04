@@ -5,14 +5,15 @@ import (
 )
 
 type Enemy struct {
-	Race         string
-	Resistances  []string
-	Strength     int
-	Dexterity    int
-	Constitution int
-	Health       int
-	Alive        bool
-	Inventory    map[string]float32
+	Race            string
+	Resistances     []string
+	Strength        int
+	Dexterity       int
+	Constitution    int
+	Health          int
+	Alive           bool
+	Inventory       map[string]float32
+	AttackTurnState bool
 }
 
 func (e *Enemy) RandomAttributeSetter() {
@@ -27,4 +28,13 @@ func (e *Enemy) RandomAttributeSetter() {
 	e.Strength = attributeHolder[0]
 	e.Dexterity = attributeHolder[1]
 	e.Constitution = attributeHolder[2]
+}
+
+func (e *Enemy) ChangeTurnState(et bool) {
+
+	if et == true {
+		e.AttackTurnState = false
+	} else {
+		e.AttackTurnState = true
+	}
 }
