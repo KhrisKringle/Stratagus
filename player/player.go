@@ -1,10 +1,8 @@
 package player
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
-	"os"
-	"strings"
 )
 
 type DamageType string
@@ -85,7 +83,9 @@ func (p Player) WeightChecker(inv map[string]float32) bool {
 	}
 }
 
-func (p *Player) DeckSetter(race string) {
+func (p *Player) DeckSetter(race string) ([]Spell, error) {
+
+	ErrInvalidRace := errors.New("invalid race")
 	switch race {
 	case "Human":
 
@@ -133,55 +133,80 @@ func (p *Player) DeckSetter(race string) {
 			Spell{FireDamage, 5},
 			Spell{FireDamage, 7},
 			Spell{FireDamage, 8})
+	default:
+		return nil, ErrInvalidRace
 	}
 
+	return p.Deck, nil
 }
 
 // Moves the player
-func (p *Player) PlayerMove() {
-	reader := bufio.NewReader(os.Stdin)
+func (p *Player) PlayerMove(input string) {
+	// reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Enter a direction (north, south, east, west): ")
+	// fmt.Print("Enter a direction (north, south, east, west): ")
 
-	// Read the user's input
-	input, _ := reader.ReadString('\n')
+	// // Read the user's input
+	// input, _ := reader.ReadString('\n')
 
-	// Remove the newline character
-	input = strings.TrimSpace(input)
+	// // Remove the newline character
+	// input = strings.TrimSpace(input)
 
-	// Check the input and take appropriate action
+	// // Check the input and take appropriate action
+	// for {
 	switch input {
 	case "north", "n", "North", "N":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y-1][p.PlayerPos_X]) {
 			fmt.Println("Thats water, you cant swim.")
-			//p.PlayerMove()
+
 		} else {
-			p.PlayerPos_Y = p.PlayerPos_Y - 1
+			if p.PlayerPos_Y-1 < 0 {
+				fmt.Println("Thats water, you cant swim.")
+			} else {
+				p.PlayerPos_Y = p.PlayerPos_Y - 1
+				return
+			}
 		}
 	case "south", "s", "South", "S":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y+1][p.PlayerPos_X]) {
 			fmt.Println("Thats water, you cant swim.")
-			//p.PlayerMove()
+
 		} else {
-			p.PlayerPos_Y = p.PlayerPos_Y + 1
+			if p.PlayerPos_Y+1 > len(WorldMap) {
+				fmt.Println("Thats water, you cant swim.")
+			} else {
+				p.PlayerPos_Y = p.PlayerPos_Y + 1
+				return
+			}
 		}
 	case "east", "e", "East", "E":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X+1]) {
 			fmt.Println("Thats water, you cant swim.")
-			//p.PlayerMove()
+
 		} else {
-			p.PlayerPos_X = p.PlayerPos_X + 1
+			if p.PlayerPos_X+1 > len(WorldMap[p.PlayerPos_Y]) {
+				fmt.Println("Thats water, you cant swim.")
+			} else {
+				p.PlayerPos_X = p.PlayerPos_X + 1
+				return
+			}
 		}
 	case "west", "w", "West", "W":
 		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X-1]) {
 			fmt.Println("Thats water, you cant swim.")
-			//p.PlayerMove()
+
 		} else {
-			p.PlayerPos_X = p.PlayerPos_X - 1
+			if p.PlayerPos_X-1 < 0 {
+				fmt.Println("Thats water, you cant swim.")
+			} else {
+				p.PlayerPos_X = p.PlayerPos_X - 1
+				return
+			}
 		}
 	default:
 		fmt.Println("Invalid direction")
-		//p.PlayerMove()
+		//continue
+
 	}
 }
 
@@ -197,16 +222,21 @@ func PlayerPositionChecker(s string) bool {
 func (p *Player) TakeDamage(dmg int) {
 	if p.Health != 0 {
 		p.Health -= dmg
+		return
 	} else {
 		p.Alive = false
+		return
 	}
 }
 
 func (p *Player) ChangeTurnState(pt bool) {
 
-	if pt == true {
-		p.AttackTurnState = false
-	} else {
+	if !pt {
 		p.AttackTurnState = true
+		return
+	} else {
+
+		p.AttackTurnState = false
+		return
 	}
 }

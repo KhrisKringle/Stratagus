@@ -115,28 +115,68 @@ outerLoop:
 							break
 						}
 					}
+					e.Health = 0
+				}
+				for {
+					reader := bufio.NewReader(os.Stdin)
 
+					fmt.Print("Enter a direction (north, south, east, west): ")
+
+					// Read the user's input
+					input, _ := reader.ReadString('\n')
+
+					// Remove the newline character
+					inputv2 := strings.TrimSpace(input)
+
+					// Check the input and take appropriate action
+					p.PlayerMove(inputv2)
 				}
 			}
 
 			if landChance >= 33 || landChance <= 66 {
 				fmt.Println(landChance)
 				fmt.Println("There is nothing here but trees...")
-				continue
+				reader := bufio.NewReader(os.Stdin)
+
+				fmt.Print("Enter a direction (north, south, east, west): ")
+
+				// Read the user's input
+				input, _ := reader.ReadString('\n')
+
+				// Remove the newline character
+				inputv2 := strings.TrimSpace(input)
+
+				// Check the input and take appropriate action
+				p.PlayerMove(inputv2)
 			}
 
 			if landChance >= 66 {
 				fmt.Println(landChance)
 				n.RandomAttributeSetter()
-				continue
+				fmt.Println("There is nothing here but trees...")
+				for {
+					reader := bufio.NewReader(os.Stdin)
 
+					fmt.Print("Enter a direction (north, south, east, west): ")
+
+					// Read the user's input
+					input, _ := reader.ReadString('\n')
+
+					// Remove the newline character
+					inputv2 := strings.TrimSpace(input)
+
+					// Check the input and take appropriate action
+					p.PlayerMove(inputv2)
+				}
 			}
-			p.PlayerMove()
 
 		}
 		if player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
-			fmt.Println("Congrats you reached the village!!!")
-			break outerLoop
+			if p.PlayerPos_Y == 3 && p.PlayerPos_X == 3 {
+				fmt.Println("Congrats you reached the village!!!")
+
+				break outerLoop
+			}
 		}
 	}
 

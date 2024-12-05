@@ -78,7 +78,19 @@ func TestPlayerMove(t *testing.T) {
 		PlayerPos_X: 1,
 	}
 
-	p.PlayerMove()
+	// reader := bufio.NewReader(os.Stdin)
+
+	// fmt.Print("Enter a direction (north, south, east, west): ")
+
+	// // Read the user's input
+	// input, _ := reader.ReadString('\n')
+
+	// // Remove the newline character
+	// input = strings.TrimSpace(input)
+
+	// Check the input and take appropriate action
+
+	p.PlayerMove("N")
 	got := player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
 	want := true
 
