@@ -59,38 +59,10 @@ func TestDeckSetter(t *testing.T) {
 func TestPlayerPosition(t *testing.T) {
 
 	p := player.Player{
-		PlayerPos_Y: 1,
-		PlayerPos_X: 0,
-	}
-
-	got := player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
-	want := true
-
-	if got != want {
-		t.Errorf("got %v want %v", got, want)
-	}
-}
-
-func TestPlayerMove(t *testing.T) {
-
-	p := player.Player{
-		PlayerPos_Y: 2,
+		PlayerPos_Y: 0,
 		PlayerPos_X: 1,
 	}
 
-	// reader := bufio.NewReader(os.Stdin)
-
-	// fmt.Print("Enter a direction (north, south, east, west): ")
-
-	// // Read the user's input
-	// input, _ := reader.ReadString('\n')
-
-	// // Remove the newline character
-	// input = strings.TrimSpace(input)
-
-	// Check the input and take appropriate action
-
-	p.PlayerMove("N")
 	got := player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X])
 	want := true
 
@@ -98,6 +70,117 @@ func TestPlayerMove(t *testing.T) {
 		t.Errorf("got %v want %v", got, want)
 	}
 }
+
+// func TestPlayerMove(t *testing.T) {
+
+// 	// Test for the starting place
+// 	p := player.Player{
+// 		PlayerPos_Y: 1,
+// 		PlayerPos_X: 0,
+// 	}
+
+// 	got := p.PlayerMove("w")
+// 	want := "Thats water, you cant swim."
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+
+// 	got = p.PlayerMove("n")
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+
+// 	got = p.PlayerMove("s")
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+
+// 	got = p.PlayerMove("e")
+// 	want = "You move East"
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// 	p.PlayerPos_X--
+
+// 	// Test for moveing in every direction
+// 	p1 := player.Player{
+// 		PlayerPos_Y: 1,
+// 		PlayerPos_X: 1,
+// 	}
+// 	got = p1.PlayerMove("w")
+// 	want = "You move West"
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// 	p1.PlayerPos_X++
+
+// 	got = p1.PlayerMove("n")
+// 	want = "You move North"
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// 	p1.PlayerPos_Y++
+
+// 	got = p1.PlayerMove("s")
+// 	want = "You move South"
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// 	p1.PlayerPos_Y--
+
+// 	got = p1.PlayerMove("e")
+// 	want = "You move East"
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// 	p1.PlayerPos_X--
+
+// 	//Checking for out of bounds errors
+// 	// North
+// 	pn := player.Player{
+// 		PlayerPos_Y: 0,
+// 		PlayerPos_X: 2,
+// 	}
+
+// 	got = pn.PlayerMove("n")
+// 	want = "Thats water, you cant swim."
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// 	//South
+// 	ps := player.Player{
+// 		PlayerPos_Y: 4,
+// 		PlayerPos_X: 1,
+// 	}
+
+// 	got = ps.PlayerMove("s")
+// 	want = "Thats water, you cant swim."
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// 	//East
+// 	pe := player.Player{
+// 		PlayerPos_Y: 2,
+// 		PlayerPos_X: 4,
+// 	}
+
+// 	got = pe.PlayerMove("e")
+// 	want = "Thats water, you cant swim."
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+
+// 	pw := player.Player{
+// 		PlayerPos_Y: 4,
+// 		PlayerPos_X: 1,
+// 	}
+
+// 	got = pw.PlayerMove("w")
+// 	want = "Thats water, you cant swim."
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
+// }
 
 func TestChangeTurnState(t *testing.T) {
 

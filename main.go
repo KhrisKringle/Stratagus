@@ -3,29 +3,46 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 
 	"github.com/KhrisKringle/Stratagus/NPC/Enemies"
-	"github.com/KhrisKringle/Stratagus/NPC/Nutrals"
 	"github.com/KhrisKringle/Stratagus/player"
+	"golang.org/x/exp/rand"
 )
 
 func main() {
+	var race string
+	var race_list = [6]string{"Elf", "Human", "Orc", "Gnome", "Trent", "Dragonkin"}
+	randRace := rand.Intn(100)
+	for {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
 
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
+		race, _ := reader.ReadString('\n')
+		race = strings.TrimSpace(race)
 
-	var race_list = []string{"Elf", "Human", "Orc", "Gnome", "Trent", "Dragonkin"}
+		switch race {
+		case "Human", "human":
+			race = "Human"
+		case "Elf", "elf":
+			race = "Elf"
+		case "Orc", "orc":
+			race = "Orc"
+		case "Gnome", "gnome":
+			race = "Gnome"
+		case "Trent", "trent":
+			race = "Trent"
+		case "Dragonkin", "dragonkin":
+			race = "Dragonkin"
+		default:
+			fmt.Println("invalid Race")
+			continue
+		}
+		break
 
-	randRace := rand.Intn(5)
-
-	race, _ := reader.ReadString('\n')
-
-	// Remove the newline character
-	race = strings.TrimSpace(race)
+	}
 
 	p := player.Player{
 		Race:         race,
@@ -46,24 +63,6 @@ func main() {
 		AttackTurnState: false,
 	}
 
-	n := Nutrals.Neutral{
-		Race:         race_list[randRace],
-		Resistances:  make([]string, 0, 5),
-		Strength:     0,
-		Dexterity:    0,
-		Constitution: 0,
-		Charisma:     0,
-		Inventory:    make(map[string]float32, 0),
-	}
-
-	e := Enemies.Enemy{
-		Race:         race_list[randRace],
-		Resistances:  make([]string, 0, 5),
-		Strength:     0,
-		Dexterity:    0,
-		Constitution: 0,
-	}
-
 	p.DeckSetter(p.Race)
 
 outerLoop:
@@ -71,9 +70,19 @@ outerLoop:
 		for p.Health > 0 {
 
 			// Decides if they meet an enemy or a neutral or an empty spot
-			landChance := rand.Intn(100)
+			//landChance := rand.Intn(100)
+			landChance := 66
+			fmt.Println("Y:", p.PlayerPos_Y)
+			fmt.Println("X:", p.PlayerPos_X)
 
-			if landChance <= 33 {
+			if landChance < 33 {
+				e := Enemies.Enemy{
+					Race:         race_list[randRace],
+					Resistances:  make([]string, 0, 5),
+					Strength:     0,
+					Dexterity:    0,
+					Constitution: 0,
+				}
 				fmt.Println(landChance)
 				e.RandomAttributeSetter()
 
@@ -117,64 +126,38 @@ outerLoop:
 					}
 					e.Health = 0
 				}
-				for {
-					reader := bufio.NewReader(os.Stdin)
 
-					fmt.Print("Enter a direction (north, south, east, west): ")
+				p.PlayerMove()
 
-					// Read the user's input
-					input, _ := reader.ReadString('\n')
-
-					// Remove the newline character
-					inputv2 := strings.TrimSpace(input)
-
-					// Check the input and take appropriate action
-					p.PlayerMove(inputv2)
-				}
 			}
 
 			if landChance >= 33 || landChance <= 66 {
 				fmt.Println(landChance)
 				fmt.Println("There is nothing here but trees...")
-				reader := bufio.NewReader(os.Stdin)
-
-				fmt.Print("Enter a direction (north, south, east, west): ")
-
-				// Read the user's input
-				input, _ := reader.ReadString('\n')
-
-				// Remove the newline character
-				inputv2 := strings.TrimSpace(input)
-
-				// Check the input and take appropriate action
-				p.PlayerMove(inputv2)
+				p.PlayerMove()
 			}
 
-			if landChance >= 66 {
+			if landChance > 66 {
+				// n := Nutrals.Neutral{
+				// 	Race:         race_list[randRace],
+				// 	Resistances:  make([]string, 0, 5),
+				// 	Strength:     0,
+				// 	Dexterity:    0,
+				// 	Constitution: 0,
+				// 	Charisma:     0,
+				// 	Inventory:    make(map[string]float32, 0),
+				// }
 				fmt.Println(landChance)
-				n.RandomAttributeSetter()
+				//n.RandomAttributeSetter()
 				fmt.Println("There is nothing here but trees...")
-				for {
-					reader := bufio.NewReader(os.Stdin)
-
-					fmt.Print("Enter a direction (north, south, east, west): ")
-
-					// Read the user's input
-					input, _ := reader.ReadString('\n')
-
-					// Remove the newline character
-					inputv2 := strings.TrimSpace(input)
-
-					// Check the input and take appropriate action
-					p.PlayerMove(inputv2)
-				}
+				fmt.Println("This is where you would meet someone.")
+				p.PlayerMove()
 			}
 
 		}
 		if player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
 			if p.PlayerPos_Y == 3 && p.PlayerPos_X == 3 {
 				fmt.Println("Congrats you reached the village!!!")
-
 				break outerLoop
 			}
 		}

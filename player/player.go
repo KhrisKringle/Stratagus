@@ -1,8 +1,11 @@
 package player
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
+	"strings"
 )
 
 type DamageType string
@@ -51,7 +54,7 @@ var WorldMap = [][]string{
 	{"land", "land", "land", "land", "water"},
 	{"water", "land", "water", "land", "land"},
 	{"water", "land", "land", "village", "land"},
-	{"water", "water", "water", "water", "water"},
+	{"water", "land", "water", "water", "water"},
 }
 
 // Allways got the modifier on deck
@@ -141,72 +144,70 @@ func (p *Player) DeckSetter(race string) ([]Spell, error) {
 }
 
 // Moves the player
-func (p *Player) PlayerMove(input string) {
-	// reader := bufio.NewReader(os.Stdin)
+func (p *Player) PlayerMove() {
+	for {
+		reader := bufio.NewReader(os.Stdin)
 
-	// fmt.Print("Enter a direction (north, south, east, west): ")
+		fmt.Print("Enter a direction (north, south, east, west): ")
 
-	// // Read the user's input
-	// input, _ := reader.ReadString('\n')
+		// Read the user's input
+		input, _ := reader.ReadString('\n')
 
-	// // Remove the newline character
-	// input = strings.TrimSpace(input)
-
-	// // Check the input and take appropriate action
-	// for {
-	switch input {
-	case "north", "n", "North", "N":
-		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y-1][p.PlayerPos_X]) {
-			fmt.Println("Thats water, you cant swim.")
-
-		} else {
+		// Remove the newline character
+		inputv2 := strings.TrimSpace(input)
+		switch inputv2 {
+		case "north", "n", "North", "N":
 			if p.PlayerPos_Y-1 < 0 {
 				fmt.Println("Thats water, you cant swim.")
-			} else {
-				p.PlayerPos_Y = p.PlayerPos_Y - 1
 				return
 			}
-		}
-	case "south", "s", "South", "S":
-		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y+1][p.PlayerPos_X]) {
-			fmt.Println("Thats water, you cant swim.")
-
-		} else {
-			if p.PlayerPos_Y+1 > len(WorldMap) {
+			if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y-1][p.PlayerPos_X]) {
 				fmt.Println("Thats water, you cant swim.")
-			} else {
-				p.PlayerPos_Y = p.PlayerPos_Y + 1
 				return
 			}
-		}
-	case "east", "e", "East", "E":
-		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X+1]) {
-			fmt.Println("Thats water, you cant swim.")
-
-		} else {
-			if p.PlayerPos_X+1 > len(WorldMap[p.PlayerPos_Y]) {
+			p.PlayerPos_Y--
+			fmt.Println("You move North")
+			return
+		case "south", "s", "South", "S":
+			if p.PlayerPos_Y+1 >= len(WorldMap) {
 				fmt.Println("Thats water, you cant swim.")
-			} else {
-				p.PlayerPos_X = p.PlayerPos_X + 1
 				return
 			}
-		}
-	case "west", "w", "West", "W":
-		if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X-1]) {
-			fmt.Println("Thats water, you cant swim.")
-
-		} else {
+			if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y+1][p.PlayerPos_X]) {
+				fmt.Println("Thats water, you cant swim.")
+				return
+			}
+			p.PlayerPos_Y++
+			fmt.Println("You move South")
+			return
+		case "east", "e", "East", "E":
+			if p.PlayerPos_X+1 >= len(WorldMap[p.PlayerPos_Y]) {
+				fmt.Println("Thats water, you cant swim.")
+				return
+			}
+			if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X+1]) {
+				fmt.Println("Thats water, you cant swim.")
+				return
+			}
+			p.PlayerPos_X++
+			fmt.Println("You move East")
+			return
+		case "west", "w", "West", "W":
 			if p.PlayerPos_X-1 < 0 {
 				fmt.Println("Thats water, you cant swim.")
-			} else {
-				p.PlayerPos_X = p.PlayerPos_X - 1
 				return
 			}
+			if !PlayerPositionChecker(WorldMap[p.PlayerPos_Y][p.PlayerPos_X-1]) {
+				fmt.Println("Thats water, you cant swim.")
+				return
+			}
+			p.PlayerPos_X--
+			fmt.Println("You move West")
+			return
+		default:
+			fmt.Println("Invalid direction")
+			continue
 		}
-	default:
-		fmt.Println("Invalid direction")
-		//continue
-
 	}
 }
 
