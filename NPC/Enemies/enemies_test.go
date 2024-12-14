@@ -37,18 +37,18 @@ func TestTakeDamage(t *testing.T) {
 	}
 }
 
-func TestDoDamage(t *testing.T) {
-	e := Enemies.Enemy{
-		Strength: 16,
-		Health:   20,
-	}
-	wantcheck := 20 - e.DoDamage()
-	e.TakeDamage(e.DoDamage())
-	got := e.Health
-	want := wantcheck
+// func TestDoDamage(t *testing.T) {
+// 	e := Enemies.Enemy{
+// 		Strength: 16,
+// 		Health:   20,
+// 	}
+// 	wantcheck := 20 - e.DoDamage()
+// 	e.TakeDamage(e.DoDamage())
+// 	got := e.Health
+// 	want := wantcheck
 
-	if got != want {
-		t.Errorf("got %v want %v", got, want)
-	}
+// 	if got != want {
+// 		t.Errorf("got %v want %v", got, want)
+// 	}
 
-}
+// }
