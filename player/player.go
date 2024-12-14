@@ -38,6 +38,7 @@ type Player struct {
 	Alive           bool
 	Inventory       map[string]float32
 	Deck            []Spell
+	SpellMod        int
 	PlayerPos_Y     int
 	PlayerPos_X     int
 	PlayerMap       [][]string

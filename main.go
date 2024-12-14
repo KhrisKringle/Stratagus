@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/KhrisKringle/Stratagus/NPC/Enemies"
 	"github.com/KhrisKringle/Stratagus/NPC/Nutrals"
+	"github.com/KhrisKringle/Stratagus/combat"
 	"github.com/KhrisKringle/Stratagus/player"
 	"golang.org/x/exp/rand"
 )
@@ -60,6 +60,7 @@ func main() {
 			"potion": 0.5,
 		},
 		Deck:            nil,
+		SpellMod:        0,
 		PlayerPos_Y:     1,
 		PlayerPos_X:     0,
 		AttackTurnState: false,
@@ -69,7 +70,7 @@ func main() {
 
 	for {
 		// Decides if they meet an enemy or a neutral or an empty spot
-		//landChance := rand.Intn(100)
+		landChance := rand.Intn(100)
 
 		fmt.Println("Y:", p.PlayerPos_Y)
 		fmt.Println("X:", p.PlayerPos_X)
@@ -78,7 +79,7 @@ func main() {
 			break
 		}
 
-		landChance := 66
+		//landChance := 66
 		if landChance < 33 {
 			e := Enemies.Enemy{
 				Race:         race_list[randRace],
@@ -87,12 +88,11 @@ func main() {
 				Dexterity:    0,
 				Constitution: 0,
 			}
-			fmt.Println(landChance)
 			e.RandomAttributeSetter()
 
+			fmt.Println(landChance)
 			if p.Dexterity > e.Dexterity {
 				p.ChangeTurnState(p.AttackTurnState)
-
 			} else if p.Dexterity < e.Dexterity {
 				e.ChangeTurnState(e.AttackTurnState)
 			} else {
@@ -105,6 +105,7 @@ func main() {
 					reader := bufio.NewReader(os.Stdin)
 
 					// Prints out the Deck
+					// This wont print RN I'm going to bed.
 					fmt.Println("Your Hand:")
 					available_input := make([]player.Spell, 0)
 					for _, spell := range p.Deck {
@@ -114,29 +115,27 @@ func main() {
 						fmt.Printf("+----------+\n")
 					}
 
-					fmt.Print("Enter what spell you want ot use: ")
-					input, _ := reader.ReadString('\n')
+					for {
+						fmt.Print("Enter what spell you want ot use: ")
+						input, _ := reader.ReadString('\n')
 
-					inputv2 := strings.TrimSpace(input)
+						inputv2 := strings.TrimSpace(input)
 
-					parts := strings.Split(inputv2, " ")
-					damageType := player.DamageType(parts[0])
-					damage, _ := strconv.Atoi(parts[1])
+						foundSpell := false
 
-					spell := player.Spell{
-						DamageType: damageType,
-						Damage:     damage,
-					}
-
-					for _, x := range available_input {
-						if spell != x {
+						for _, x := range available_input {
+							if inputv2 == fmt.Sprintf("%s %d", x.DamageType, x.Damage) {
+								foundSpell = true
+								p.SpellMod = x.Damage
+								break
+							}
+						}
+						if !foundSpell {
 							fmt.Printf("You do not have the spell type %s\n", inputv2)
-							break
 						}
 					}
-					e.Health = 0
 				} else if e.AttackTurnState {
-					p.TakeDamage(e.DoDamage())
+					p.TakeDamage(combat.Attack(p.Strength, e.Strength, p, e) + p.SpellMod)
 				}
 			}
 			p.PlayerMove()
