@@ -2,10 +2,11 @@ package player
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
+
+	"golang.org/x/exp/rand"
 )
 
 type DamageType string
@@ -86,14 +87,11 @@ func (p Player) WeightChecker(inv map[string]float32) bool {
 	}
 }
 
-func (p *Player) DeckSetter(race string) ([]Spell, error) {
+func (p *Player) DeckSetter(race string) {
 
-	ErrInvalidRace := errors.New("invalid race")
 	switch race {
 	case "Human":
-
 		//p.Deck = append(p.Deck, Spell{HolyDamage, 3})
-
 		p.Deck = append(p.Deck,
 			Spell{HolyDamage, 3},
 			Spell{HolyDamage, 4},
@@ -136,11 +134,7 @@ func (p *Player) DeckSetter(race string) ([]Spell, error) {
 			Spell{FireDamage, 5},
 			Spell{FireDamage, 7},
 			Spell{FireDamage, 8})
-	default:
-		return nil, ErrInvalidRace
 	}
-
-	return p.Deck, nil
 }
 
 // Moves the player
@@ -218,6 +212,13 @@ func PlayerPositionChecker(s string) bool {
 	} else {
 		return false
 	}
+}
+
+func (p Player) DoDamage() int {
+	attrole := rand.Intn(20)
+
+	withmod := attrole + p.Modifier("Strength")
+	return withmod
 }
 
 func (p *Player) TakeDamage(dmg int) {

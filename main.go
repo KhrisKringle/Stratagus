@@ -8,17 +8,19 @@ import (
 	"strings"
 
 	"github.com/KhrisKringle/Stratagus/NPC/Enemies"
+	"github.com/KhrisKringle/Stratagus/NPC/Nutrals"
 	"github.com/KhrisKringle/Stratagus/player"
 	"golang.org/x/exp/rand"
 )
 
 func main() {
+
 	var race string
 	var race_list = [6]string{"Elf", "Human", "Orc", "Gnome", "Trent", "Dragonkin"}
-	randRace := rand.Intn(100)
+	randRace := rand.Intn(5)
 	for {
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Println("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
+		fmt.Print("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
 
 		race, _ := reader.ReadString('\n')
 		race = strings.TrimSpace(race)
@@ -65,37 +67,44 @@ func main() {
 
 	p.DeckSetter(p.Race)
 
-outerLoop:
-	for player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
-		for p.Health > 0 {
+	for {
+		// Decides if they meet an enemy or a neutral or an empty spot
+		//landChance := rand.Intn(100)
 
-			// Decides if they meet an enemy or a neutral or an empty spot
-			//landChance := rand.Intn(100)
-			landChance := 66
-			fmt.Println("Y:", p.PlayerPos_Y)
-			fmt.Println("X:", p.PlayerPos_X)
+		fmt.Println("Y:", p.PlayerPos_Y)
+		fmt.Println("X:", p.PlayerPos_X)
+		if p.PlayerPos_Y == 3 && p.PlayerPos_X == 3 {
+			fmt.Println("Congrats you reached the village!!!")
+			break
+		}
 
-			if landChance < 33 {
-				e := Enemies.Enemy{
-					Race:         race_list[randRace],
-					Resistances:  make([]string, 0, 5),
-					Strength:     0,
-					Dexterity:    0,
-					Constitution: 0,
-				}
-				fmt.Println(landChance)
-				e.RandomAttributeSetter()
+		landChance := 66
+		if landChance < 33 {
+			e := Enemies.Enemy{
+				Race:         race_list[randRace],
+				Resistances:  make([]string, 0, 5),
+				Strength:     0,
+				Dexterity:    0,
+				Constitution: 0,
+			}
+			fmt.Println(landChance)
+			e.RandomAttributeSetter()
 
-				if p.Dexterity > e.Dexterity {
-					p.ChangeTurnState(p.AttackTurnState)
+			if p.Dexterity > e.Dexterity {
+				p.ChangeTurnState(p.AttackTurnState)
 
-				} else {
-					e.ChangeTurnState(e.AttackTurnState)
-				}
-				fmt.Println("You Have entered combat!!!")
-				for p.Health > 0 || e.Health > 0 {
+			} else if p.Dexterity < e.Dexterity {
+				e.ChangeTurnState(e.AttackTurnState)
+			} else {
+				p.ChangeTurnState(p.AttackTurnState)
+			}
+			fmt.Println("You Have entered combat!!!")
+
+			for p.Health > 0 || e.Health > 0 {
+				if p.AttackTurnState {
 					reader := bufio.NewReader(os.Stdin)
 
+					// Prints out the Deck
 					fmt.Println("Your Hand:")
 					available_input := make([]player.Spell, 0)
 					for _, spell := range p.Deck {
@@ -105,6 +114,7 @@ outerLoop:
 						fmt.Printf("+----------+\n")
 					}
 
+					fmt.Print("Enter what spell you want ot use: ")
 					input, _ := reader.ReadString('\n')
 
 					inputv2 := strings.TrimSpace(input)
@@ -125,41 +135,34 @@ outerLoop:
 						}
 					}
 					e.Health = 0
+				} else if e.AttackTurnState {
+					p.TakeDamage(e.DoDamage())
 				}
-
-				p.PlayerMove()
-
 			}
-
-			if landChance >= 33 || landChance <= 66 {
-				fmt.Println(landChance)
-				fmt.Println("There is nothing here but trees...")
-				p.PlayerMove()
-			}
-
-			if landChance > 66 {
-				// n := Nutrals.Neutral{
-				// 	Race:         race_list[randRace],
-				// 	Resistances:  make([]string, 0, 5),
-				// 	Strength:     0,
-				// 	Dexterity:    0,
-				// 	Constitution: 0,
-				// 	Charisma:     0,
-				// 	Inventory:    make(map[string]float32, 0),
-				// }
-				fmt.Println(landChance)
-				//n.RandomAttributeSetter()
-				fmt.Println("There is nothing here but trees...")
-				fmt.Println("This is where you would meet someone.")
-				p.PlayerMove()
-			}
-
+			p.PlayerMove()
 		}
-		if player.PlayerPositionChecker(player.WorldMap[p.PlayerPos_Y][p.PlayerPos_X]) {
-			if p.PlayerPos_Y == 3 && p.PlayerPos_X == 3 {
-				fmt.Println("Congrats you reached the village!!!")
-				break outerLoop
+
+		if landChance >= 33 || landChance <= 66 {
+			fmt.Println(landChance)
+			fmt.Println("There is nothing here but trees...")
+			p.PlayerMove()
+		}
+
+		if landChance > 66 {
+			n := Nutrals.Neutral{
+				Race:         race_list[randRace],
+				Resistances:  make([]string, 0, 5),
+				Strength:     0,
+				Dexterity:    0,
+				Constitution: 0,
+				Charisma:     0,
+				Inventory:    make(map[string]float32, 0),
 			}
+			fmt.Println(landChance)
+			n.RandomAttributeSetter()
+			fmt.Println("There is nothing here but trees...")
+			fmt.Println("This is where you would meet someone.")
+			p.PlayerMove()
 		}
 	}
 
