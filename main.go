@@ -15,39 +15,12 @@ import (
 
 func main() {
 
-	var race string
+	//var race string
+	//race = "Elf"
 	var race_list = [6]string{"Elf", "Human", "Orc", "Gnome", "Trent", "Dragonkin"}
 	randRace := rand.Intn(5)
-	for {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
-
-		race, _ := reader.ReadString('\n')
-		race = strings.TrimSpace(race)
-
-		switch race {
-		case "Human", "human":
-			race = "Human"
-		case "Elf", "elf":
-			race = "Elf"
-		case "Orc", "orc":
-			race = "Orc"
-		case "Gnome", "gnome":
-			race = "Gnome"
-		case "Trent", "trent":
-			race = "Trent"
-		case "Dragonkin", "dragonkin":
-			race = "Dragonkin"
-		default:
-			fmt.Println("invalid Race")
-			continue
-		}
-		break
-
-	}
-
 	p := player.Player{
-		Race:         race,
+		Race:         "",
 		Resistances:  make([]string, 0, 5),
 		Journal:      make([]string, 0),
 		Strength:     20,
@@ -59,11 +32,40 @@ func main() {
 			"sword":  15.2,
 			"potion": 0.5,
 		},
-		Deck:            nil,
+		Deck:            make([]player.Spell, 0),
 		SpellMod:        0,
 		PlayerPos_Y:     1,
 		PlayerPos_X:     0,
 		AttackTurnState: false,
+	}
+
+	for {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Pick a race (Elf, Human, Orc, Gnome, Trent, Dragonkin): ")
+
+		race, _ := reader.ReadString('\n')
+		race = strings.TrimSpace(race)
+		fmt.Println(race)
+
+		switch race {
+		case "Human", "human":
+			p.Race = "Human"
+		case "Elf", "elf":
+			p.Race = "Elf"
+		case "Orc", "orc":
+			p.Race = "Orc"
+		case "Gnome", "gnome":
+			p.Race = "Gnome"
+		case "Trent", "trent":
+			p.Race = "Trent"
+		case "Dragonkin", "dragonkin":
+			p.Race = "Dragonkin"
+		default:
+			fmt.Println("invalid Race")
+			continue
+		}
+		break
+
 	}
 
 	p.DeckSetter(p.Race)
@@ -84,6 +86,7 @@ func main() {
 			e := Enemies.Enemy{
 				Race:         race_list[randRace],
 				Resistances:  make([]string, 0, 5),
+				Health:       20,
 				Strength:     0,
 				Dexterity:    0,
 				Constitution: 0,
@@ -98,44 +101,63 @@ func main() {
 			} else {
 				p.ChangeTurnState(p.AttackTurnState)
 			}
+
 			fmt.Println("You Have entered combat!!!")
 
-			for p.Health > 0 || e.Health > 0 {
+			for {
+				fmt.Printf("Player Dex: %v\n", p.Dexterity)
+				fmt.Printf("Enemy Dex: %v\n", e.Dexterity)
+				fmt.Printf("Player attackstate: %v\n", p.AttackTurnState)
+				fmt.Printf("Enemy attackstate: %v\n", e.AttackTurnState)
 				if p.AttackTurnState {
-					reader := bufio.NewReader(os.Stdin)
-
-					// Prints out the Deck
-					// This wont print RN I'm going to bed.
-					fmt.Println("Your Hand:")
-					available_input := make([]player.Spell, 0)
-					for _, spell := range p.Deck {
-						available_input = append(available_input, spell)
-						fmt.Printf("+----------+\n")
-						fmt.Printf("| [%s] %d  |\n", spell.DamageType, spell.Damage)
-						fmt.Printf("+----------+\n")
+					if p.Health <= 0 {
+						fmt.Println("GAME OVER!!!")
+						break
 					}
-
+					// Prints out the Deck
 					for {
-						fmt.Print("Enter what spell you want ot use: ")
+						fmt.Println("Your Hand:")
+						available_input := make([]player.Spell, 0, len(p.Deck))
+						player.PrintSpells(p.Deck, available_input)
+						fmt.Print("Enter what spell you want to use: ")
+						reader := bufio.NewReader(os.Stdin)
 						input, _ := reader.ReadString('\n')
 
 						inputv2 := strings.TrimSpace(input)
 
 						foundSpell := false
 
-						for _, x := range available_input {
+						// Check if the input is in the deck
+						for i, x := range p.Deck {
 							if inputv2 == fmt.Sprintf("%s %d", x.DamageType, x.Damage) {
 								foundSpell = true
 								p.SpellMod = x.Damage
+								p.RemoveSpellAtIndex(i)
 								break
 							}
 						}
+
 						if !foundSpell {
 							fmt.Printf("You do not have the spell type %s\n", inputv2)
+						} else {
+							e.TakeDamage(combat.Attack(p.Strength, e.Strength, p, e) + p.SpellMod)
+							fmt.Printf("You dealt %v damage\n", combat.Attack(p.Strength, e.Strength, p, e)+p.SpellMod)
+							p.ChangeTurnState(p.AttackTurnState)
+							e.ChangeTurnState(e.AttackTurnState)
+							fmt.Println("Enemy Health: ", e.Health)
+							break
 						}
 					}
-				} else if e.AttackTurnState {
-					p.TakeDamage(combat.Attack(p.Strength, e.Strength, p, e) + p.SpellMod)
+				} else {
+					if e.Health <= 0 {
+						fmt.Println("You defeated the Beast!!!")
+						break
+					}
+					p.TakeDamage(combat.Attack(e.Strength, p.Strength, p, e))
+					fmt.Printf("You took %v damage\n", combat.Attack(e.Strength, p.Strength, p, e)+p.SpellMod)
+					fmt.Println("Player Health: ", p.Health)
+					e.ChangeTurnState(e.AttackTurnState)
+					p.ChangeTurnState(p.AttackTurnState)
 				}
 			}
 			p.PlayerMove()
@@ -145,6 +167,7 @@ func main() {
 			fmt.Println(landChance)
 			fmt.Println("There is nothing here but trees...")
 			p.PlayerMove()
+			continue
 		}
 
 		if landChance > 66 {
@@ -162,6 +185,7 @@ func main() {
 			fmt.Println("There is nothing here but trees...")
 			fmt.Println("This is where you would meet someone.")
 			p.PlayerMove()
+			continue
 		}
 	}
 

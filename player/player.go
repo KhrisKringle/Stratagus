@@ -35,7 +35,6 @@ type Player struct {
 	Constitution    int
 	Charisma        int
 	Health          int
-	Alive           bool
 	Inventory       map[string]float32
 	Deck            []Spell
 	SpellMod        int
@@ -138,6 +137,20 @@ func (p *Player) DeckSetter(race string) {
 	}
 }
 
+func (p *Player) RemoveSpellAtIndex(index int) []Spell {
+
+	return append(p.Deck[:index], p.Deck[index+1:]...)
+}
+
+func PrintSpells(deck []Spell, availableinput []Spell) {
+	for _, spell := range deck {
+		availableinput = append(availableinput, spell)
+		fmt.Fprint(os.Stdout, "+----------+\n")
+		fmt.Fprintf(os.Stdout, "| [%s] %d  |\n", spell.DamageType, spell.Damage)
+		fmt.Fprint(os.Stdout, "+----------+\n")
+	}
+}
+
 // Moves the player
 func (p *Player) PlayerMove() {
 	for {
@@ -223,13 +236,7 @@ func (p Player) DoDamage() int {
 }
 
 func (p *Player) TakeDamage(dmg int) {
-	if p.Health != 0 {
-		p.Health -= dmg
-		return
-	} else {
-		p.Alive = false
-		return
-	}
+	p.Health -= dmg
 }
 
 func (p *Player) ChangeTurnState(pt bool) {
