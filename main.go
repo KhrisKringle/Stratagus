@@ -9,11 +9,22 @@ import (
 	"github.com/KhrisKringle/Stratagus/NPC/Enemies"
 	"github.com/KhrisKringle/Stratagus/NPC/Nutrals"
 	"github.com/KhrisKringle/Stratagus/combat"
+	"github.com/KhrisKringle/Stratagus/db"
 	"github.com/KhrisKringle/Stratagus/player"
 	"golang.org/x/exp/rand"
 )
 
 func main() {
+
+	// Initialize ScyllaDB
+	clusterIPs := []string{"172.17.0.2"}
+	keyspace := "my_keyspace"
+
+	db.InitScyllaDB(clusterIPs, keyspace)
+	defer db.CloseScyllaDB()
+
+	// Create the table
+	db.CreateEnemyTable()
 
 	//var race string
 	//race = "Elf"
